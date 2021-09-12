@@ -11,8 +11,6 @@ type MyDB struct {
 	conn *sql.DB
 }
 
-var db *sql.DB
-
 func NewMyDB(dbUser, dbPass, dbHost string, dbPort int, dbName string) (MyDB, error) {
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", dbUser, dbPass, dbHost, dbPort, dbName))
 	if err != nil {
