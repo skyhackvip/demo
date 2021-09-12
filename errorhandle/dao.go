@@ -34,7 +34,7 @@ func (myDB MyDB) Get(id int) (*User, error) {
 	err := myDB.conn.QueryRow("select id,name from user where id=?", id).Scan(&u.Id, &u.Name)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			log.Printf("user not found : %d\n", id) //log for warning,ignore the error
+			log.Printf("user not found : %d\n", id) //log for warning,ignore the error or change error to logic code
 			return u, nil
 		} else {
 			return u, err
