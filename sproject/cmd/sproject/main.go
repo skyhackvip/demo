@@ -27,13 +27,15 @@ func init() {
 func main() {
 	//config
 	flag.Parse()
-	c := configs.LoadConfig(_confName)
+	c, err := configs.LoadConfig(_confName)
+	if err != nil {
+		log.Fatal("config error")
+	}
 
 	//grpc
-	port := 7777
-	listener, err := net.Listen("tcp", ftm.Sprintf("localhost:%d", port))
+	listener, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", 7777))
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	svc := service.New(c)
 	s := grpc.NewServer()

@@ -15,4 +15,5 @@ message LoginRequest {
 
 message LoginResponse {
 	bool isLogined = 1;
+	string msg = 2;
 }
