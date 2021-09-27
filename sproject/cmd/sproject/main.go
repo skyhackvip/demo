@@ -8,6 +8,7 @@ import (
 	"github.com/skyhackvip/geek/sproject/configs"
 	"github.com/skyhackvip/geek/sproject/internal/service"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"os"
@@ -21,7 +22,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&_confName, "config_name", "config.yaml", "default config filename")
+	flag.StringVar(&_confName, "c", "config.yaml", "default config filename")
 }
 
 func main() {
@@ -32,15 +33,20 @@ func main() {
 		log.Fatal("config error")
 	}
 
-	//grpc
-	listener, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", 7777))
-	if err != nil {
-		log.Fatal(err)
-	}
+	//rpc
 	svc := service.New(c)
-	s := grpc.NewServer()
-	api.RegisterUserServer(s, svc)
-	s.Serve(listener)
+	rpc := grpc.NewServer()
+	go func() {
+
+		listener, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", 7777))
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("server start")
+		api.RegisterUserServer(rpc, svc)
+		reflection.Register(rpc)
+		rpc.Serve(listener)
+	}()
 
 	//graceful restart
 	quit := make(chan os.Signal, 1)
@@ -48,11 +54,11 @@ func main() {
 	<-quit
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	//close
-
+	log.Println("server stop")
+	rpc.GracefulStop()
 	select {
 	case <-ctx.Done():
 		log.Println("server stop timeout 5 seconds")
 	}
-	log.Println("server stop")
+
 }

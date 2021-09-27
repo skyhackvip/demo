@@ -7,7 +7,7 @@ import (
 
 func (d *Dao) CheckLogin(name, pass string) (bool, error) {
 	u := &model.User{}
-	err := d.db.QueryRow("select id from user where name=?", name).Scan(&u.Pass)
+	err := d.db.QueryRow("select pass from user where name=?", name).Scan(&u.Pass)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return false, nil
