@@ -28,17 +28,17 @@ func init() {
 func main() {
 	//config
 	flag.Parse()
-	c, err := configs.LoadConfig(_confName)
+	conf, err := configs.LoadConfig(_confName)
 	if err != nil {
 		log.Fatal("config error")
 	}
 
 	//rpc
-	svc := service.New(c)
+	svc := service.New(conf)
 	rpc := grpc.NewServer()
 	go func() {
 
-		listener, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", 7777))
+		listener, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", conf.Server))
 		if err != nil {
 			log.Fatal(err)
 		}

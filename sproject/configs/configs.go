@@ -6,11 +6,12 @@ import (
 )
 
 type Config struct {
-	User string
-	Pass string
-	Host string
-	Port int
-	Name string
+	User   string
+	Pass   string
+	Host   string
+	Port   int
+	Name   string
+	Server string
 }
 
 func LoadConfig(c string) (*Config, error) {
